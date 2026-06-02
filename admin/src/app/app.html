@@ -1,6 +1,6 @@
 <div class="admin-layout">
-  <app-sidebar></app-sidebar>
-  <main class="admin-content">
+  <app-sidebar *ngIf="mostrarSidebar"></app-sidebar>
+  <main class="admin-content" [class.full-width]="!mostrarSidebar">
     <router-outlet></router-outlet>
   </main>
 </div>

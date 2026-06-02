@@ -1,0 +1,28 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="assets/logo.png" alt="Logo">
+      <div>
+        <span class="logo-name">Daisy Peralta</span>
+        <span class="logo-sub">Catholic Psychotherapist & Life Coach</span>
+      </div>
+    </div>
+
+    <h2>Bienvenida</h2>
+    <p class="login-desc">Ingresa tus credenciales para acceder al panel</p>
+
+    <div class="form-group">
+      <label>Correo Electrónico</label>
+      <input type="email" placeholder="correo@ejemplo.com" class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input type="password" placeholder="••••••••" class="form-input">
+    </div>
+
+    <p class="error-msg" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+    <button class="btn-login" (click)="login()">Iniciar Sesión</button>
+  </div>
+</div>

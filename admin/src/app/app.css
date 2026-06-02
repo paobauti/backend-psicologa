@@ -9,3 +9,6 @@
   background-color: #fff8f5;
   overflow-y: auto;
 }
+.full-width {
+  padding: 0;
+}
