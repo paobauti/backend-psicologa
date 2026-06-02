@@ -1,0 +1,37 @@
+<div class="citas">
+  <div class="citas-header">
+    <h1>Citas</h1>
+    <p>Gestiona las citas de tus pacientes</p>
+  </div>
+
+  <div class="citas-content">
+    <div class="calendario-container">
+      <full-calendar [options]="calendarOptions"></full-calendar>
+    </div>
+
+    <div class="citas-lista">
+      <h2>Citas del día</h2>
+      <div class="cita-item">
+        <p class="cita-hora">8:00 AM</p>
+        <div class="cita-info">
+          <p class="cita-nombre">Jessica Martínez</p>
+          <p class="cita-estado confirmada">CONFIRMADA</p>
+        </div>
+      </div>
+      <div class="cita-item">
+        <p class="cita-hora">10:00 AM</p>
+        <div class="cita-info">
+          <p class="cita-nombre">Francisco López</p>
+          <p class="cita-estado cancelada">CANCELADA</p>
+        </div>
+      </div>
+      <div class="cita-item">
+        <p class="cita-hora">12:00 PM</p>
+        <div class="cita-info">
+          <p class="cita-nombre">Mauricio Castañeda</p>
+          <p class="cita-estado pendiente">EN PROCESO</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

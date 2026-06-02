@@ -1,0 +1,107 @@
+.citas {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.citas-header h1 {
+  font-size: 28px;
+  color: #5c3d2e;
+}
+
+.citas-header p {
+  font-size: 13px;
+  color: #a0856e;
+  margin-top: 5px;
+}
+
+.citas-content {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.calendario-container {
+  background: white;
+  border: 1px solid #f0e0d6;
+  border-radius: 10px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .fc {
+  font-family: 'Playfair Display', serif;
+  font-size: 12px;
+}
+
+:host ::ng-deep .fc-toolbar-title {
+  font-size: 14px;
+  color: #c4956a;
+}
+
+:host ::ng-deep .fc-button {
+  background-color: #e8a898 !important;
+  border-color: #e8a898 !important;
+  font-size: 12px !important;
+}
+
+:host ::ng-deep .fc-daygrid-day-number {
+  color: #5c3d2e;
+  font-size: 12px;
+}
+
+:host ::ng-deep .fc-col-header-cell-cushion {
+  color: #a0856e;
+  font-size: 11px;
+}
+
+:host ::ng-deep .fc-daygrid-day.fc-day-today {
+  background-color: #fdf0eb !important;
+}
+
+.citas-lista {
+  background: white;
+  border: 1px solid #f0e0d6;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.citas-lista h2 {
+  font-size: 16px;
+  color: #c4956a;
+  margin-bottom: 5px;
+}
+
+.cita-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid #f0e0d6;
+  padding-bottom: 12px;
+}
+
+.cita-hora {
+  font-size: 12px;
+  color: #a0856e;
+  min-width: 55px;
+}
+
+.cita-nombre {
+  font-size: 13px;
+  color: #5c3d2e;
+}
+
+.cita-estado {
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.confirmada { color: #2e7d32; }
+.cancelada { color: #c62828; }
+.pendiente { color: #e65100; }
+.terminada { color: #a0856e; }

@@ -1,0 +1,114 @@
+.pacientes {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.pacientes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pacientes-header h1 {
+  font-size: 28px;
+  color: #5c3d2e;
+}
+
+.pacientes-header p {
+  font-size: 13px;
+  color: #a0856e;
+  margin-top: 5px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.buscador {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #f0e0d6;
+  border-radius: 25px;
+  padding: 8px 16px;
+  background: white;
+  color: #a0856e;
+}
+
+.buscador input {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: #a0856e;
+  font-family: 'Playfair Display', serif;
+  width: 180px;
+}
+
+.btn-agregar {
+  background-color: #e8a898;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Playfair Display', serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-agregar:hover {
+  background-color: #d4917f;
+}
+
+.tabla-container {
+  background: white;
+  border: 1px solid #f0e0d6;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla thead tr {
+  background-color: #e8a898;
+  color: white;
+}
+
+.tabla th {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tabla td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #5c3d2e;
+  border-bottom: 1px solid #f0e0d6;
+}
+
+.tabla tbody tr:hover {
+  background-color: #fff8f5;
+}
+
+.empty-row td {
+  text-align: center;
+  padding: 50px;
+  color: #a0856e;
+}
+
+.empty-row i {
+  font-size: 40px;
+  color: #f0e0d6;
+  display: block;
+  margin-bottom: 10px;
+}
