@@ -1,4 +1,6 @@
 <div class="pacientes">
+
+  <!-- Encabezado -->
   <div class="pacientes-header">
     <div>
       <h1>Pacientes</h1>
@@ -7,34 +9,136 @@
     <div class="header-actions">
       <div class="buscador">
         <i class="fa-solid fa-search"></i>
-        <input type="text" placeholder="Buscar Paciente">
+        <input
+          type="text"
+          placeholder="Buscar Paciente"
+          [(ngModel)]="busqueda"
+          (input)="filtrar()"
+        />
       </div>
-      <button class="btn-agregar">
+      <button class="btn-agregar" (click)="abrirModalNuevo()">
         <i class="fa-solid fa-user-plus"></i> Añadir Paciente
       </button>
     </div>
   </div>
 
-  <div class="tabla-container">
+  <!-- Error -->
+  <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+  <!-- Cargando -->
+  <div class="cargando" *ngIf="cargando">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="tabla-container" *ngIf="!cargando">
     <table class="tabla">
       <thead>
         <tr>
           <th>Nombre Paciente</th>
-          <th>Contacto</th>
-          <th>Última sesión</th>
-          <th>Próxima Cita</th>
-          <th>Estado</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th>Fecha registro</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr class="empty-row">
-          <td colspan="6">
+        <tr *ngFor="let u of usuariosPagina">
+          <td class="td-nombre">
+            <div class="avatar-nombre">
+              <div class="avatar">
+                <i class="fa-regular fa-user"></i>
+              </div>
+              {{ u.nombre }}
+            </div>
+          </td>
+          <td>{{ u.email ?? '—' }}</td>
+          <td>{{ u.telefono ?? '—' }}</td>
+          <td>{{ formatearFecha(u.created_at) }}</td>
+          <td class="td-acciones">
+            <button class="btn-icono btn-editar" (click)="abrirModalEditar(u)" title="Editar">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button class="btn-icono btn-eliminar" (click)="confirmarEliminar(u)" title="Eliminar">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+
+        <tr class="empty-row" *ngIf="usuariosPagina.length === 0">
+          <td colspan="5">
             <i class="fa-regular fa-user"></i>
-            <p>No hay pacientes registrados</p>
+            <p>No se encontraron pacientes.</p>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <!-- Paginación -->
+    <div class="paginacion" *ngIf="totalPaginas > 1">
+      <button
+        *ngFor="let p of paginas"
+        (click)="cambiarPagina(p)"
+        [class.activa]="p === paginaActual"
+      >{{ p }}</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── MODAL CREAR / EDITAR ─── -->
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ modoEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
+      <button class="btn-cerrar" (click)="cerrarModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="campo">
+        <label>Nombre <span class="requerido">*</span></label>
+        <input type="text" placeholder="Nombre completo"
+          [(ngModel)]="usuarioSeleccionado.nombre" />
+      </div>
+      <div class="campo">
+        <label>Email</label>
+        <input type="email" placeholder="correo@ejemplo.com"
+          [(ngModel)]="usuarioSeleccionado.email" />
+      </div>
+      <div class="campo">
+        <label>Teléfono</label>
+        <input type="text" placeholder="Ej. 6181234567"
+          [(ngModel)]="usuarioSeleccionado.telefono" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-guardar" (click)="guardarUsuario()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : (modoEdicion ? 'Guardar cambios' : 'Añadir Paciente') }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MODAL CONFIRMAR ELIMINAR ─── -->
+<div class="modal-overlay" *ngIf="mostrarConfirmar" (click)="cancelarEliminar()">
+  <div class="modal modal-confirmar" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Eliminar paciente</h2>
+      <button class="btn-cerrar" (click)="cancelarEliminar()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>¿Estás segura que deseas eliminar a <strong>{{ usuarioAEliminar?.nombre }}</strong>?</p>
+      <p class="advertencia">Esta acción no se puede deshacer.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cancelarEliminar()">Cancelar</button>
+      <button class="btn-eliminar-confirm" (click)="eliminarUsuario()">
+        <i class="fa-solid fa-trash"></i> Eliminar
+      </button>
+    </div>
   </div>
 </div>

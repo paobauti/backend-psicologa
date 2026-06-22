@@ -1,127 +1,149 @@
 <div class="recursos">
+
+  <!-- Header -->
   <div class="recursos-header">
     <div>
       <h1>Recursos</h1>
       <p>Gestiona los recursos, artículos y archivos que compartes</p>
     </div>
-    <button class="btn-agregar">
+    <button class="btn-agregar" (click)="abrirModalNuevo()">
       <i class="fa-solid fa-plus"></i> Nuevo Recurso
     </button>
   </div>
 
-  <div class="recursos-grid">
-    <div class="recurso-card">
-      <div class="recurso-imagen">
-        <img src="assets/articulo1.jpg" alt="Recurso 1">
-        <span class="categoria fe">Fe y Espiritualidad</span>
-      </div>
-      <div class="recurso-info">
-        <h3>Cómo fortalecer tu relación con Dios en tiempos difíciles</h3>
-        <p>Claves prácticas para mantener tu fe firme aún en medio de las pruebas.</p>
-      </div>
-      <div class="recurso-actions">
-        <label class="toggle">
-          <input type="checkbox" checked>
-          <span class="slider"></span>
-        </label>
-        <button class="btn-icon"><i class="fa-regular fa-pen-to-square"></i></button>
-        <button class="btn-icon danger"><i class="fa-regular fa-trash-can"></i></button>
-      </div>
+  <!-- Error -->
+  <div class="error-msg" *ngIf="error">{{ error }}</div>
+
+  <!-- Cargando -->
+  <div class="cargando" *ngIf="cargando">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Grid de recursos -->
+  <div class="recursos-grid" *ngIf="!cargando">
+
+    <div class="empty-state" *ngIf="recursos.length === 0">
+      <i class="fa-regular fa-folder-open"></i>
+      <p>No hay recursos todavía. ¡Crea el primero!</p>
     </div>
 
-    <div class="recurso-card">
+    <div class="recurso-card" *ngFor="let r of recursos">
+
+      <!-- Imagen -->
       <div class="recurso-imagen">
-        <img src="assets/articulo2.jpg" alt="Recurso 2">
-        <span class="categoria salud">Salud emocional</span>
+        <img *ngIf="r.imagen_url" [src]="r.imagen_url" [alt]="r.titulo" />
+        <div class="sin-imagen" *ngIf="!r.imagen_url">
+          <i class="fa-regular fa-image"></i>
+        </div>
+        <span class="categoria" *ngIf="r.categoria">{{ r.categoria }}</span>
       </div>
+
+      <!-- Info -->
       <div class="recurso-info">
-        <h3>Autoestima: verte como Dios te ve</h3>
-        <p>Trabaja tu identidad y descubre tu identidad como hijo(a) amado(a) por Dios.</p>
+        <h3>{{ r.titulo }}</h3>
+        <p *ngIf="r.descripcion">{{ r.descripcion }}</p>
       </div>
+
+      <!-- Acciones -->
       <div class="recurso-actions">
-        <label class="toggle">
-          <input type="checkbox" checked>
+        <label class="toggle" [title]="r.publicado ? 'Publicado' : 'No publicado'">
+          <input type="checkbox" [checked]="r.publicado" (change)="togglePublicado(r)" />
           <span class="slider"></span>
         </label>
-        <button class="btn-icon"><i class="fa-regular fa-pen-to-square"></i></button>
-        <button class="btn-icon danger"><i class="fa-regular fa-trash-can"></i></button>
+        <button class="btn-icon" (click)="abrirModalEditar(r)" title="Editar">
+          <i class="fa-regular fa-pen-to-square"></i>
+        </button>
+        <button class="btn-icon danger" (click)="confirmarEliminar(r)" title="Eliminar">
+          <i class="fa-regular fa-trash-can"></i>
+        </button>
       </div>
+
     </div>
 
-    <div class="recurso-card">
-      <div class="recurso-imagen">
-        <img src="assets/articulo3.jpg" alt="Recurso 3">
-        <span class="categoria bienestar">Bienestar</span>
+  </div>
+
+</div>
+
+<!-- ─── MODAL CREAR / EDITAR ─── -->
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ modoEdicion ? 'Editar Recurso' : 'Nuevo Recurso' }}</h2>
+      <button class="btn-cerrar" (click)="cerrarModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="campo">
+        <label>Título <span class="requerido">*</span></label>
+        <input type="text" placeholder="Título del recurso"
+          [(ngModel)]="recursoSeleccionado.titulo" />
       </div>
-      <div class="recurso-info">
-        <h3>Manejo de ansiedad desde la Fe y la ciencia.</h3>
-        <p>Herramientas terapéuticas y espirituales para recuperar tu paz interior.</p>
+      <div class="campo">
+        <label>Categoría</label>
+        <select [(ngModel)]="recursoSeleccionado.categoria">
+          <option *ngFor="let c of CATEGORIAS" [value]="c">{{ c }}</option>
+        </select>
       </div>
-      <div class="recurso-actions">
-        <label class="toggle">
-          <input type="checkbox" checked>
-          <span class="slider"></span>
-        </label>
-        <button class="btn-icon"><i class="fa-regular fa-pen-to-square"></i></button>
-        <button class="btn-icon danger"><i class="fa-regular fa-trash-can"></i></button>
+      <div class="campo">
+        <label>Descripción corta</label>
+        <textarea rows="2" placeholder="Descripción breve..."
+          [(ngModel)]="recursoSeleccionado.descripcion"></textarea>
+      </div>
+      <div class="campo">
+        <label>Contenido</label>
+        <textarea rows="4" placeholder="Contenido completo del recurso..."
+          [(ngModel)]="recursoSeleccionado.contenido"></textarea>
+      </div>
+      <div class="campo">
+        <label>URL de imagen</label>
+        <input type="text" placeholder="https://..."
+          [(ngModel)]="recursoSeleccionado.imagen_url" />
+      </div>
+      <div class="campo">
+        <label>URL de PDF</label>
+        <input type="text" placeholder="https://...pdf"
+          [(ngModel)]="recursoSeleccionado.pdf_url" />
+      </div>
+      <div class="campo campo-toggle">
+        <label>Visibilidad</label>
+        <div class="toggle-row">
+          <label class="toggle">
+            <input type="checkbox" [checked]="recursoSeleccionado.publicado"
+              (change)="recursoSeleccionado.publicado = !recursoSeleccionado.publicado" />
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label">{{ recursoSeleccionado.publicado ? 'Publicado' : 'No publicado' }}</span>
+        </div>
       </div>
     </div>
-
-    <div class="recurso-card">
-      <div class="recurso-imagen">
-        <img src="assets/articulo4.jpg" alt="Recurso 4">
-        <span class="categoria fe">Fe y Espiritualidad</span>
-      </div>
-      <div class="recurso-info">
-        <h3>La oración como herramienta terapéutica</h3>
-        <p>Cómo la oración puede transformar tu mente, tu corazón y tu vida.</p>
-      </div>
-      <div class="recurso-actions">
-        <label class="toggle">
-          <input type="checkbox" checked>
-          <span class="slider"></span>
-        </label>
-        <button class="btn-icon"><i class="fa-regular fa-pen-to-square"></i></button>
-        <button class="btn-icon danger"><i class="fa-regular fa-trash-can"></i></button>
-      </div>
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-guardar" (click)="guardarRecurso()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : (modoEdicion ? 'Guardar cambios' : 'Crear recurso') }}
+      </button>
     </div>
+  </div>
+</div>
 
-    <div class="recurso-card">
-      <div class="recurso-imagen">
-        <img src="assets/articulo5.jpg" alt="Recurso 5">
-        <span class="categoria crecimiento">Crecimiento Personal</span>
-      </div>
-      <div class="recurso-info">
-        <h3>Estableciendo límites saludables</h3>
-        <p>Aprende a decir no sin culpa y a priorizar tu bienestar emocional.</p>
-      </div>
-      <div class="recurso-actions">
-        <label class="toggle">
-          <input type="checkbox" checked>
-          <span class="slider"></span>
-        </label>
-        <button class="btn-icon"><i class="fa-regular fa-pen-to-square"></i></button>
-        <button class="btn-icon danger"><i class="fa-regular fa-trash-can"></i></button>
-      </div>
+<!-- ─── MODAL CONFIRMAR ELIMINAR ─── -->
+<div class="modal-overlay" *ngIf="mostrarConfirmar" (click)="cancelarEliminar()">
+  <div class="modal modal-confirmar" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Eliminar recurso</h2>
+      <button class="btn-cerrar" (click)="cancelarEliminar()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
     </div>
-
-    <div class="recurso-card">
-      <div class="recurso-imagen">
-        <img src="assets/articulo6.jpg" alt="Recurso 6">
-        <span class="categoria bienestar">Bienestar</span>
-      </div>
-      <div class="recurso-info">
-        <h3>Comunicación que sana: en pareja y en familia</h3>
-        <p>Mejora tus relaciones desde el amor, el respeto y los principios cristianos.</p>
-      </div>
-      <div class="recurso-actions">
-        <label class="toggle">
-          <input type="checkbox" checked>
-          <span class="slider"></span>
-        </label>
-        <button class="btn-icon"><i class="fa-regular fa-pen-to-square"></i></button>
-        <button class="btn-icon danger"><i class="fa-regular fa-trash-can"></i></button>
-      </div>
+    <div class="modal-body">
+      <p>¿Estás segura que deseas eliminar <strong>{{ recursoAEliminar?.titulo }}</strong>?</p>
+      <p class="advertencia">Esta acción no se puede deshacer.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cancelarEliminar()">Cancelar</button>
+      <button class="btn-eliminar-confirm" (click)="eliminarRecurso()">
+        <i class="fa-solid fa-trash"></i> Eliminar
+      </button>
     </div>
   </div>
 </div>
